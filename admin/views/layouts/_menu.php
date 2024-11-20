@@ -5,7 +5,7 @@ use admin\models\UserAdminSearch;
 use admin\modules\modelExportImport\models\ModelImportLogSearch;
 use admin\modules\rbac\components\RbacNav;
 use common\components\helpers\UserUrl;
-use common\models\{ExportListSearch, TextSearch};
+use common\models\{CodeCategorySearch, CodeSearch, ExportListSearch, TextSearch};
 use common\modules\log\Log;
 use common\modules\mail\models\{MailingLogSearch, MailingSearch, MailTemplateSearch};
 use common\modules\notification\widgets\NotificationBell;
@@ -39,12 +39,20 @@ if (!Yii::$app->user->isGuest) {
     /** @var Log $logModule */
     $logModule = Yii::$app->getModule('log');
     $menuItems = [
-        ['label' => Icon::show('chart-bar') . 'Статистика', 'url' => ['/statistic/index']],
+        [
+            'label' => Yii::t('app', 'Codes'),
+            'url' => UserUrl::setFilters(CodeSearch::class, ['/code/index'])
+        ],
+        [
+            'label' => Yii::t('app', 'Code Categories'),
+            'url' => UserUrl::setFilters(CodeCategorySearch::class, ['/code-category/index'])
+        ],
         [
             'label' => Icon::show('users') . 'Пользователи',
             'url' => UserUrl::setFilters(UserSearch::class, ['/user/user/index']),
             'visible' => (bool)Yii::$app->getModule('user')
         ],
+        ['label' => Icon::show('chart-bar') . 'Статистика', 'url' => ['/statistic/index']],
         [
             'label' => Icon::show('file-alt') . 'Контент',
             'items' => [
