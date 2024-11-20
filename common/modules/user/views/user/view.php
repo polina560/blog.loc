@@ -72,7 +72,20 @@ $this->params['breadcrumbs'][] = $this->title;
             Column::widget(['attr' => 'last_login_at', 'format' => 'datetime']),
             Column::widget(['attr' => 'created_at', 'format' => 'datetime']),
             Column::widget(['attr' => 'updated_at', 'format' => 'datetime']),
-            Column::widget(['attr' => 'last_ip', 'format' => 'ip'])
+            Column::widget(['attr' => 'last_ip', 'format' => 'ip']),
+            [
+                'label' => 'Промокоды',
+                'format' => 'raw',
+                'value' => static function(User $users) {
+                    $res = '';
+                    foreach ($users->codes as $code) {
+                        if($res != '') $res .= ', ';
+                        $res .= $code->promocode;
+
+                    }
+                    return $res;
+                }
+            ],
         ]
     ]) ?>
 

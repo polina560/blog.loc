@@ -9,9 +9,7 @@ use yii\bootstrap5\Html;
  * @var $model common\models\Code
  */
 
-$this->title = Yii::t('app', 'Update Code: {name}', [
-    'name' => $model->id,
-]);
+$this->title = Yii::t('app', 'Update Code: ') . $model->id;
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app', 'Codes'),
     'url' => UserUrl::setFilters(CodeSearch::class)

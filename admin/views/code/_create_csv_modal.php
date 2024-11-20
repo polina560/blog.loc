@@ -12,12 +12,12 @@ use yii\bootstrap5\Modal;
 <?php $modal = Modal::begin([
     'title' => Yii::t('app', 'Loading Code'),
     'toggleButton' => [
-        'label' => Yii::t('app', 'Create Codes'),
+        'label' => Yii::t('app', 'Create Codes with .csv file'),
         'class' => 'btn btn-success',
         'disabled' => !RbacHtml::isAvailable(['create'])
     ]
 ]) ?>
 
-<?= $this->render('_modal_form', ['model' => $model, 'isCreate' => false]) ?>
+<?= $this->render('_csv_modal_form', ['model' => $model, 'isCreate' => false]) ?>
 
 <?php Modal::end() ?>

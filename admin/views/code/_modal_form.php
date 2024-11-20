@@ -1,6 +1,5 @@
 <?php
 
-use admin\widgets\input\Select2;
 use common\widgets\AppActiveForm;
 use kartik\icons\Icon;
 use yii\bootstrap5\Html;
@@ -14,25 +13,18 @@ use yii\helpers\Url;
  */
 ?>
 
-<div class="code-form">
+<div class="code-modal-form">
 
     <?php $form = AppActiveForm::begin() ?>
 
-    <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+    <?php $categories = new \common\models\CodeCategory();?>
 
-    <?= $form->field($model, 'promocode')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'code_category_id')->dropDownList($categories->getCategoriesNameArray()) ?>
 
-    <?= $form->field($model, 'code_category_id')->textInput() ?>
+    <?= $form->field($model, 'codes_promoList')->textInput() ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
 
-    <?= $form->field($model, 'taken_at')->textInput() ?>
 
-    <?= $form->field($model, 'user_ip')->textInput() ?>
-
-    <?= $form->field($model, 'public_status')->widget(
-        Select2::class,
-        ['data' => \common\enums\IssueStatus::indexedDescriptions(), 'hideSearch' => true]) ?>
 
     <div class="form-group">
         <?php if ($isCreate) {

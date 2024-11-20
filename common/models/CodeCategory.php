@@ -47,6 +47,16 @@ class CodeCategory extends AppActiveRecord
         ];
     }
 
+    public function getCategoriesNameArray()
+    {
+        $names = self::find()->select(['id', 'name'])->asArray()->all();
+
+
+        return array_column($names, 'name', 'id');
+    }
+
+
+
     final public function getCodes(): ActiveQuery
     {
         return $this->hasMany(Code::class, ['code_category_id' => 'id']);

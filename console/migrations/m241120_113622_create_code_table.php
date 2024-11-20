@@ -15,7 +15,7 @@ class m241120_113622_create_code_table extends Migration
         $this->createTable('{{%code}}', [
             'id' => 'int NOT NULL AUTO_INCREMENT',
             'code' => $this->string(6)->notNull(),
-            'promocode' => $this->string(6)->notNull(),
+            'promocode' => $this->string(255)->notNull(),
             'code_category_id' => $this->integer()->notNull(),
             'user_id' => $this->integer(),
             'taken_at' => $this->integer(),

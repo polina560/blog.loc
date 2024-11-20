@@ -9,7 +9,7 @@ use yii\bootstrap5\Html;
  * @var $model common\models\Code
  */
 
-$this->title = Yii::t('app', 'Create Code');
+$this->title = Yii::t('app', 'Create Codes');
 $this->params['breadcrumbs'][] = [
     'label' => Yii::t('app', 'Codes'),
     'url' => UserUrl::setFilters(CodeSearch::class)
@@ -20,6 +20,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', ['model' => $model, 'isCreate' => true]) ?>
+    <?= $this->render('_create_modal', ['model' => $model, 'isCreate' => true]) ?>
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <?= $this->render('_create_csv_modal', ['model' => $model, 'isCreate' => true]) ?>
 
 </div>

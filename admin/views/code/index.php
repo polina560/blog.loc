@@ -2,6 +2,7 @@
 
 use admin\components\GroupedActionColumn;
 use admin\components\widgets\gridView\Column;
+use admin\components\widgets\gridView\ColumnSelect2;
 use admin\modules\rbac\components\RbacHtml;
 use admin\widgets\sortableGridView\SortableGridView;
 use kartik\grid\SerialColumn;
@@ -21,10 +22,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= RbacHtml::encode($this->title) ?></h1>
 
-    <div>
-        <?= 
-            RbacHtml::a(Yii::t('app', 'Create Code'), ['create'], ['class' => 'btn btn-success']);
-//           $this->render('_create_modal', ['model' => $model]);
+    <div class="form-group">
+        <?=
+//            RbacHtml::a(Yii::t('app', 'Download Code'), ['create'], ['class' => 'btn btn-success']);
+           $this->render('_create_modal', ['model' => $model]);
+        ?>
+
+        <?=
+//            RbacHtml::a(Yii::t('app', 'Download Code'), ['create'], ['class' => 'btn btn-success']);
+           $this->render('_create_csv_modal', ['model' => $model]);
         ?>
     </div>
 
@@ -38,11 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
             Column::widget(),
             Column::widget(['attr' => 'code']),
             Column::widget(['attr' => 'promocode']),
-            Column::widget(['attr' => 'code_category_id']),
-            Column::widget(['attr' => 'user_id']),
+            Column::widget(['attr' => 'code_category_id', 'viewAttr' => 'category.name']),
+            Column::widget(['attr' => 'user_id', 'viewAttr' => 'user.username']),
 //            Column::widget(['attr' => 'taken_at']),
 //            Column::widget(['attr' => 'user_ip']),
-//            Column::widget(['attr' => 'public_status']),
+//            ColumnSelect2::widget(['attr' => 'public_status','items' => \common\enums\IssueStatus::class, 'hideSearch' => true]),
 
             ['class' => GroupedActionColumn::class]
         ]

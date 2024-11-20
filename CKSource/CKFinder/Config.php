@@ -129,6 +129,14 @@ class Config
                     'backend' => 'default',
                 ],
                 [
+                    'name' => 'FilesCSV',
+                    'directory' => 'files',
+                    'maxSize' => 0,
+                    'allowedExtensions' => 'csv',
+                    'deniedExtensions' => '',
+                    'backend' => 'default',
+                ],
+                [
                     'name' => 'Images',
                     'directory' => 'images',
                     'maxSize' => 0,

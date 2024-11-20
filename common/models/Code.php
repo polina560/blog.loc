@@ -3,9 +3,11 @@
 namespace common\models;
 
 use common\models\AppActiveRecord;
+use common\modules\user\models\User;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%code}}".
@@ -24,12 +26,22 @@ use yii\helpers\ArrayHelper;
  */
 class Code extends AppActiveRecord
 {
+
+    public UploadedFile|string|null $codes_promoList = null;
+    public UploadedFile|string|null $csvFile = null;
+
+
     /**
      * {@inheritdoc}
      */
     public static function tableName(): string
     {
         return '{{%code}}';
+    }
+
+    public static function externalAttributes(): array
+    {
+        return ['category.name', 'user.username'];
     }
 
     /**
@@ -40,9 +52,12 @@ class Code extends AppActiveRecord
         return [
             [['code', 'promocode', 'code_category_id'], 'required'],
             [['code_category_id', 'user_id', 'taken_at', 'user_ip', 'public_status'], 'integer'],
-            [['code', 'promocode'], 'string', 'max' => 6],
+            [['code'], 'string', 'max' => 6],
+            [['promocode'], 'string', 'max' => 255],
             [['code_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => CodeCategory::class, 'targetAttribute' => ['code_category_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']]
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['codes_promoList'], 'string'],
+            [['csvFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'csv']
         ];
     }
 
@@ -58,12 +73,26 @@ class Code extends AppActiveRecord
             'code_category_id' => Yii::t('app', 'Code Category ID'),
             'user_id' => Yii::t('app', 'User ID'),
             'taken_at' => Yii::t('app', 'Taken At'),
-            'user_ip' => Yii::t('app', 'User Ip'),
+            'user_ip' => Yii::t('app', 'User IP'),
             'public_status' => Yii::t('app', 'Public Status'),
         ];
     }
 
-    final public function getCodeCategory(): ActiveQuery
+//    public function beforeSave($insert): bool
+//    {
+////        if ($this->codes_promoList instanceof UploadedFile) {
+////
+////            $randomName = Yii::$app->security->generateRandomString(8);
+////            $public = Yii::getAlias('@public');
+////            $path = '/uploads/' . $randomName . '.' . $this->imageFile->extension;
+////            $this->imageFile->saveAs($public . $path);
+////            $this->image = $path;
+////        }
+////        return parent::beforeSave($insert);
+//    }
+
+
+    final public function getCategory(): ActiveQuery
     {
         return $this->hasOne(CodeCategory::class, ['id' => 'code_category_id']);
     }

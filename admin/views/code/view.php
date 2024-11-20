@@ -1,6 +1,7 @@
 <?php
 
 use admin\components\widgets\detailView\Column;
+use admin\components\widgets\gridView\ColumnSelect2;
 use admin\modules\rbac\components\RbacHtml;
 use common\components\helpers\UserUrl;
 use common\models\CodeSearch;
@@ -43,11 +44,11 @@ $this->params['breadcrumbs'][] = RbacHtml::encode($this->title);
             Column::widget(),
             Column::widget(['attr' => 'code']),
             Column::widget(['attr' => 'promocode']),
-            Column::widget(['attr' => 'code_category_id']),
-            Column::widget(['attr' => 'user_id']),
+            Column::widget(['attr' => 'code_category_id', 'viewAttr' => 'category.name']),
+            Column::widget(['attr' => 'user_id', 'viewAttr' => 'user.username']),
             Column::widget(['attr' => 'taken_at']),
             Column::widget(['attr' => 'user_ip']),
-            Column::widget(['attr' => 'public_status']),
+            ColumnSelect2::widget(['attr' => 'public_status', 'items' => \common\enums\IssueStatus::class]),
         ]
     ]) ?>
 

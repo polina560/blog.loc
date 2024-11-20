@@ -87,6 +87,12 @@ $this->params['layout_class'] = 'container-fluid';
                 'hideSearch' => true,
                 'width' => 120,
             ]),
+            [
+                'label' => 'Promocodes',
+                'value' => function (User $model) {
+                    return \common\models\Code::find()->where(['user_id' => $model->id])->count();
+                }
+            ],
 
             [
                 'class' => GroupedActionColumn::class,

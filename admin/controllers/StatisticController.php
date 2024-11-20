@@ -8,6 +8,7 @@ use admin\widgets\apexCharts\Line;
 use admin\widgets\tooltip\TooltipWidget;
 use common\components\helpers\ChartHelper;
 use common\enums\Boolean;
+use common\models\Code;
 use common\modules\backup\models\DbWrap;
 use common\modules\mail\{enums\LogStatus, models\MailingLog};
 use common\modules\user\models\{Email, User};
@@ -61,6 +62,14 @@ final class StatisticController extends AdminController
             'value' => User::find()->count()
         ];
         $data[] = [
+            'name' => 'Всего кодов',
+            'value' => Code::find()->count()
+        ];
+        $data[] = [
+            'name' => 'Кодов роздано',
+            'value' => Code::find()->where(['user_id' => !null])->count()
+        ];
+        $data[] = [
             'name' => 'Подтвержден Email ' . TooltipWidget::widget(
                     ['title' => Yii::t('app', 'The number of users who are fully registered')]
                 ),
@@ -70,10 +79,10 @@ final class StatisticController extends AdminController
             'name' => 'Кол-во активных бекапов',
             'value' => count(DbWrap::getBackups())
         ];
-        $data[] = [
-            'name' => 'Кол-во ошибок отправки писем',
-            'value' => MailingLog::find()->where(['status' => LogStatus::Error->value])->count()
-        ];
+//        $data[] = [
+//            'name' => 'Кол-во ошибок отправки писем',
+//            'value' => MailingLog::find()->where(['status' => LogStatus::Error->value])->count()
+//        ];
         $data[] = [
             'name' => 'Общее кол-во администраторов',
             'value' => UserAdmin::find()->count()
