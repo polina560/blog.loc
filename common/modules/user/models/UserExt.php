@@ -22,6 +22,7 @@ use yii\db\ActiveQuery;
  * @property string    $phone          [varchar(25)] Номер телефона
  * @property int       $rules_accepted [tinyint(1)] Согласие с правилами
  * @property string    $service_data   Служебные данные
+ * @property int       $invalid_code   Кол-во неверно введенных кодов
  *
  * @property-read User $user
  */
@@ -56,6 +57,7 @@ class UserExt extends AppActiveRecord
                 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']
             ],
+            [['invalid_code'], 'integer']
         ];
     }
 
@@ -73,6 +75,7 @@ class UserExt extends AppActiveRecord
             'phone' => Yii::t(Module::MODULE_MESSAGES, 'Phone'),
             'rules_accepted' => Yii::t(Module::MODULE_MESSAGES, 'Rules Accepted'),
             'service_data' => Yii::t(Module::MODULE_MESSAGES, 'Service Data'),
+            'invalid_code' => Yii::t('app', 'Invalid Code'),
         ];
     }
 

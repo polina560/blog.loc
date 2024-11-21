@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 
+use common\modules\user\models\UserExt;
 use api\behaviors\returnStatusBehavior\{JsonSuccess, RequestFormData};
 use common\models\Code;
 use OpenApi\Attributes\{Items, Post, Property};
@@ -39,13 +40,15 @@ class CodeController extends AppController
         $code = $this->getParameterFromRequest('code');
         $user_id = Yii::$app->user->identity->getId();
 
+        $codeModel = Code::find()->where(['code' => $code])->one();
 
-        if (empty($code) ) {
+        if (empty($code) || empty($codeModel)) {
+            $user = UserExt::find()->where(['user_id' => $user_id])->one();
+            $invalid_code_cnt = $user->invalid_code + 1;
+            $user->load(['user_id' => $invalid_code_cnt], '');
+            $user->save();
             return $this->returnError(['Поле code не заполнено или заполнено некорректно']);
         }
-
-
-        $codeModel = Code::find()->where(['code' => $code])->one();
 
 
         if($codeModel->load(['user_id' => $user_id],'') && $codeModel->validate()){

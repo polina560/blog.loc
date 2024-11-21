@@ -33,7 +33,7 @@ return [
 
         'app-user_reg' => [
             'request_cooldown' => 2,
-//            'permanent_block_after_max_level' => true, // Заблокировать пользователя как кончатся уровни блокировки
+            'permanent_block_after_max_level' => true, // Заблокировать пользователя как кончатся уровни блокировки
             'blocking_levels' => [ // Защита от перебора
                 [
                     'max_errors' => 3, // Кол-во допустимых ошибок за
