@@ -20,6 +20,8 @@ class UploadForm extends Model
      */
     public null|string|UploadedFile $file = null;
 
+    public null|int $category_id = null;
+
     /**
      * Label input-а
      */
@@ -29,6 +31,7 @@ class UploadForm extends Model
      * Допустимые расширения файла
      */
     public string $extensions = 'csv,xlsx,ods';
+    // TODO: ID категории
 
     /**
      * {@inheritdoc}
@@ -42,6 +45,12 @@ class UploadForm extends Model
                 'skipOnEmpty' => false,
                 'extensions' => $this->extensions,
                 'checkExtensionByMimeType' => false
+
+//
+            ],
+            [
+                'category_id',
+                'integer'
             ]
         ];
     }
@@ -51,6 +60,8 @@ class UploadForm extends Model
      */
     final public function attributeLabels(): array
     {
-        return ['file' => $this->label];
+        return [
+            'file' => $this->label,
+        ];
     }
 }

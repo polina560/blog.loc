@@ -1,11 +1,13 @@
 <?php
 
 use admin\components\GroupedActionColumn;
+use admin\components\uploadForm\UploadFormWidget;
 use admin\components\widgets\gridView\Column;
 use admin\components\widgets\gridView\ColumnSelect2;
 use admin\modules\rbac\components\RbacHtml;
 use admin\widgets\sortableGridView\SortableGridView;
 use kartik\grid\SerialColumn;
+use yii\helpers\Url;
 use yii\widgets\ListView;
 
 /**
@@ -24,14 +26,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="form-group">
         <?=
-//            RbacHtml::a(Yii::t('app', 'Download Code'), ['create'], ['class' => 'btn btn-success']);
-           $this->render('_create_modal', ['model' => $model]);
+        //            RbacHtml::a(Yii::t('app', 'Download Code'), ['create'], ['class' => 'btn btn-success']);
+        $this->render('_create_modal', ['model' => $model]);
         ?>
 
-        <?=
-//            RbacHtml::a(Yii::t('app', 'Download Code'), ['create'], ['class' => 'btn btn-success']);
-           $this->render('_create_csv_modal', ['model' => $model]);
-        ?>
+        <?= UploadFormWidget::widget([
+            'action' => Url::to(['upload']),
+            'btnMessage' => 'Загрузить из файла',
+            'title' => 'Загрузить коды',
+        ]) ?>
     </div>
 
     <?= SortableGridView::widget([

@@ -3,6 +3,8 @@
 namespace common\models;
 
 use common\models\AppActiveRecord;
+use OpenApi\Attributes\Property;
+use OpenApi\Attributes\Schema;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
@@ -15,6 +17,11 @@ use yii\helpers\ArrayHelper;
  *
  * @property-read Code[] $codes
  */
+#[Schema(properties: [
+    new Property(property: 'id', type: 'integer'),
+    new Property(property: 'name', type: 'string'),
+])]
+
 class CodeCategory extends AppActiveRecord
 {
     /**
@@ -33,6 +40,14 @@ class CodeCategory extends AppActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255]
+        ];
+    }
+
+    final public function fields(): array
+    {
+        return [
+            'id',
+            'name'
         ];
     }
 

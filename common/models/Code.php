@@ -2,10 +2,17 @@
 
 namespace common\models;
 
+use admin\components\parsers\ParserInterface;
+use admin\components\uploadForm\models\UploadForm;
+use admin\components\uploadForm\models\UploadInterface;
 use common\models\AppActiveRecord;
 use common\modules\user\models\User;
+use OpenApi\Attributes\Property;
+use OpenApi\Attributes\Schema;
+use OpenSpout\Common\Entity\Cell;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
@@ -24,7 +31,10 @@ use yii\web\UploadedFile;
  * @property-read CodeCategory $codeCategory
  * @property-read User         $user
  */
-class Code extends AppActiveRecord
+#[Schema(properties: [
+    new Property(property: 'promocode', type: 'string'),
+])]
+class Code extends AppActiveRecord implements UploadInterface
 {
 
     public UploadedFile|string|null $codes_promoList = null;
@@ -54,10 +64,20 @@ class Code extends AppActiveRecord
             [['code_category_id', 'user_id', 'taken_at', 'user_ip', 'public_status'], 'integer'],
             [['code'], 'string', 'max' => 6],
             [['promocode'], 'string', 'max' => 255],
-            [['code_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => CodeCategory::class, 'targetAttribute' => ['code_category_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['codes_promoList'], 'string'],
-            [['csvFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'csv']
+            [
+                ['code_category_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => CodeCategory::class,
+                'targetAttribute' => ['code_category_id' => 'id']
+            ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -78,18 +98,12 @@ class Code extends AppActiveRecord
         ];
     }
 
-//    public function beforeSave($insert): bool
-//    {
-////        if ($this->codes_promoList instanceof UploadedFile) {
-////
-////            $randomName = Yii::$app->security->generateRandomString(8);
-////            $public = Yii::getAlias('@public');
-////            $path = '/uploads/' . $randomName . '.' . $this->imageFile->extension;
-////            $this->imageFile->saveAs($public . $path);
-////            $this->image = $path;
-////        }
-////        return parent::beforeSave($insert);
-//    }
+    final public function fields(): array
+    {
+        return [
+            'promocode',
+        ];
+    }
 
 
     final public function getCategory(): ActiveQuery
@@ -100,5 +114,42 @@ class Code extends AppActiveRecord
     final public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function insertFromFile(UploadForm $model, ParserInterface $parser): void
+    {
+        $values = [];
+        $parser->fileRowIterate(
+            $model->file->tempName,
+            /**
+             * @param Cell[] $cells
+             * @throws Exception
+             */
+            function (array $cells, int $key) use (&$values, $model) {
+                if ($key === 1) {
+                    return;
+                }
+                $code = $cells[0]->getValue();// TODO: проверки
+//                if(empty($code) || strlen($code) != 6) return;
+                $promocode = $cells[1]->getValue();
+                $values[] = [$code, $promocode, $model->category_id];
+                if (count($values) > 10000) {
+                    Yii::$app->db->createCommand()
+//                        ->batchInsert(self::tableName(), ['code', 'promocode'], $values)
+                        ->batchInsert(self::tableName(), ['code', 'promocode', 'code_category_id'], $values)
+                        ->execute();
+                    $values = [];
+                }
+            }
+        );
+        if (!empty($values)) {
+            Yii::$app->db->createCommand()
+//                ->batchInsert(self::tableName(), ['code', 'promocode'], $values)
+                ->batchInsert(self::tableName(), ['code', 'promocode', 'code_category_id'], $values)
+                ->execute();
+        }
     }
 }

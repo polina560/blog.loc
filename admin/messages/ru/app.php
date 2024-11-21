@@ -179,6 +179,7 @@ return [
     'Create Code Category' => 'Добавить категорию кодов',
     'Update Code: ' => 'Обновить код: ',
     'Create Codes' => 'Добавить коды',
+    'Create Code' => 'Добавить код',
 
 
     'Code Category ID' => 'ID Категории',

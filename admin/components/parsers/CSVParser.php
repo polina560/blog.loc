@@ -21,7 +21,7 @@ final class CSVParser implements ParserInterface
     /**
      * Ожидаемый разделитель
      */
-    public string $separator = ';';
+    public string $separator = ',';
 
     /**
      * Ожидаемая кодировка файла

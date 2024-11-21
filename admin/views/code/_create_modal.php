@@ -12,7 +12,7 @@ use yii\bootstrap5\Modal;
 <?php $modal = Modal::begin([
     'title' => Yii::t('app', 'Loading Code'),
     'toggleButton' => [
-        'label' => Yii::t('app', 'Create Codes'),
+        'label' => Yii::t('app', 'Create Code'),
         'class' => 'btn btn-success',
         'disabled' => !RbacHtml::isAvailable(['create'])
     ]

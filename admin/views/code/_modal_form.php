@@ -21,7 +21,9 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'code_category_id')->dropDownList($categories->getCategoriesNameArray()) ?>
 
-    <?= $form->field($model, 'codes_promoList')->textInput() ?>
+    <?= $form->field($model, 'code')->textInput() ?>
+
+    <?= $form->field($model, 'promocode')->textInput() ?>
 
 
 

@@ -54,6 +54,8 @@ Modal::begin([
 
             <?= $form->field($model, 'file')->label(false)->fileInput() ?>
 
+            <?= $form->field($model, 'category_id')->label(false)->textInput() ?>
+
             <div class='form-group'>
                 <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
             </div>
