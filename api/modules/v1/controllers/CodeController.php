@@ -41,12 +41,8 @@ class CodeController extends AppController
         // валидация
         $user_id = Yii::$app->user->identity->getId();
         $user = UserExt::find()->where(['user_id' => $user_id])->one();
-        // Не забанен ли уже
-        $currentTime = time();
-//        if ($user->banned_at > time() - $params['period']) {
-//
-//        }
-        return $this->returnError('Подождите N времени');
+
+
         $codeModel = Code::find()->where(['code' => $code])->one();
 
         if (empty($code) || empty($codeModel)) {
@@ -70,6 +66,31 @@ class CodeController extends AppController
 
 
     }
+
+//    public function isUserBanned(UserExt $user)
+//    {
+//        // Не забанен ли уже
+//        $currentTime = time();
+//        if ($user->banned_at > time() - $params['period']) {
+//
+//        }
+//
+//    }
+//
+//    public function banUser(UserExt $user)
+//    {
+//        $user->banned = 1;
+//        $user->banned_at = time();
+//        $user->save();
+////        return $this->returnError('Подождите N времени');
+//    }
+//
+//    public function removeBan()
+//    {
+//        $user->banned = 1;
+//        $user->banned_at = null;
+//        $user->save();
+//    }
 
     //фун-ии 1) проверить забаненность, забанить, снять бан
 //     ArrayHelper::getValue(Yii::$app->params, 'request_limits.' . $category);
