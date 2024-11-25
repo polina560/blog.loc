@@ -42,13 +42,16 @@ class CodeController extends AppController
         $user_id = Yii::$app->user->identity->getId();
         $user = UserExt::find()->where(['user_id' => $user_id])->one();
 
-
         $codeModel = Code::find()->where(['code' => $code])->one();
 
         if (empty($code) || empty($codeModel)) {
+            return $this->returnError(['Поле code не заполнено']);
+        }
+
+        if (empty($codeModel)) {
             $user->invalid_code += 1;
             $user->save();
-            return $this->returnError(['Поле code не заполнено или заполнено некорректно']);
+            return $this->returnError(['Поле code заполнено некорректно']);
         }
 
 
@@ -77,13 +80,17 @@ class CodeController extends AppController
 //
 //    }
 //
-//    public function banUser(UserExt $user)
-//    {
-//        $user->banned = 1;
-//        $user->banned_at = time();
-//        $user->save();
-////        return $this->returnError('Подождите N времени');
-//    }
+    public function banUser(UserExt $user)
+    {
+        if($user->invalid_code == 3)
+        {
+            $user->banned = 1;
+            $user->banned_at = time();
+            $user->save();
+
+        }
+//        return $this->returnError('Подождите N времени');
+    }
 //
 //    public function removeBan()
 //    {
