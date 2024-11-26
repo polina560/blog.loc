@@ -115,9 +115,7 @@ class CodeController extends AppController
         $user->banned_at = null;
         $user->save();
     }
-
-//     ArrayHelper::getValue(Yii::$app->params, 'request_limits.' . $category);
-
+    
 
 
 }
