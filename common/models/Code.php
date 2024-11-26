@@ -122,19 +122,38 @@ class Code extends AppActiveRecord implements UploadInterface
     public static function insertFromFile(UploadForm $model, ParserInterface $parser): void
     {
         $values = [];
+        $columnKeyCode = null;
+        $columnKeyPromo = null;
+
         $parser->fileRowIterate(
             $model->file->tempName,
             /**
              * @param Cell[] $cells
              * @throws Exception
              */
-            function (array $cells, int $key) use (&$values, $model) {
+            function (array $cells, int $key) use (&$values, $model, &$columnKeyCode, &$columnKeyPromo) {
                 if ($key === 1) {
+                    foreach ($cells as $columnKey => $cell) {
+                        if(empty($cell->getValue())) {
+                            Yii::$app->session->setFlash('error', "Заголовок колонки пуст");
+                            return;
+                        }
+                        if(str_contains($cell->getValue(), 'promo'))
+                            $columnKeyPromo = $columnKey;
+                        if(!str_contains($cell->getValue(), 'promo') && str_contains($cell->getValue(), 'code'))
+                            $columnKeyCode = $columnKey;
+                    }
                     return;
                 }
-                $code = $cells[0]->getValue();// TODO: проверки
-//                if(empty($code) || strlen($code) != 6) return;
-                $promocode = $cells[1]->getValue();
+
+                $code = $cells[$columnKeyCode]->getValue();
+                $promocode = $cells[$columnKeyPromo]->getValue();
+
+
+                if(empty($code) || strlen($code) != 6) {
+                    Yii::$app->session->setFlash('error', "Некорректный код");
+                    return;
+                }
                 $values[] = [$code, $promocode, $model->category_id];
                 if (count($values) > 10000) {
                     Yii::$app->db->createCommand()
