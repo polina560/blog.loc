@@ -208,4 +208,12 @@ class User extends AppActiveRecord implements IdentityInterface, ExportConfig
     {
         return $this->hasMany(Code::class, ['user_id' => 'id']);
     }
+
+    public function getUsersNameArray()
+    {
+        $names = self::find()->select(['id', 'username'])->asArray()->all();
+
+
+        return array_column($names, 'username', 'id');
+    }
 }

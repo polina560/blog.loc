@@ -22,9 +22,13 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'promocode')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'code_category_id')->textInput() ?>
+    <?php $categories = new \common\models\CodeCategory();?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'code_category_id')->dropDownList($categories->getCategoriesNameArray()) ?>
+
+    <?php $users = new \common\modules\user\models\User();?>
+
+    <?= $form->field($model, 'user_id')->dropDownList($users->getUsersNameArray()) ?>
 
     <?= $form->field($model, 'taken_at')->textInput() ?>
 

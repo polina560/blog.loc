@@ -54,7 +54,9 @@ Modal::begin([
 
             <?= $form->field($model, 'file')->label(false)->fileInput() ?>
 
-            <?= $form->field($model, 'category_id')->label(false)->textInput() ?>
+            <?php $categories = new \common\models\CodeCategory();?>
+
+            <?= $form->field($model, 'category_id')->dropDownList($categories->getCategoriesNameArray()) ?>
 
             <div class='form-group'>
                 <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

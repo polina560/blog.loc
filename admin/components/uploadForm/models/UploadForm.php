@@ -31,7 +31,7 @@ class UploadForm extends Model
      * Допустимые расширения файла
      */
     public string $extensions = 'csv,xlsx,ods';
-    // TODO: ID категории
+
 
     /**
      * {@inheritdoc}
