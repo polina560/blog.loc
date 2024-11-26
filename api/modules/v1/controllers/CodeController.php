@@ -8,7 +8,7 @@ use api\behaviors\returnStatusBehavior\{JsonSuccess, RequestFormData};
 use common\models\Code;
 use OpenApi\Attributes\{Items, Post, Property};
 use Yii;
-
+use yii\base\Exception;
 
 
 class CodeController extends AppController
@@ -38,29 +38,9 @@ class CodeController extends AppController
     public function actionIndex(): array
     {
         $user_id = Yii::$app->user->identity->getId();
-        $user = UserExt::find()->where(['user_id' => $user_id])->one();
-
-        if($user->banned) {
-            if ($user->invalid_code == 3) {
-                if (time() < ($user->banned_at + 5 * 60)) {
-                    return $this->returnError(['Вы забанены на 5 минут. Дождитесь разблокировки.']);
-                }
-            }
-            if ($user->invalid_code == 6) {
-                if (time() < ($user->banned_at + 30 * 60)) {
-                    return $this->returnError(['Вы забанены на 30 минут. Дождитесь разблокировки.']);
-                }
-            }
-            if ($user->invalid_code >= 9) {
-                return $this->returnError(['Вы забанены.']);
-            } else {
-                $user->banned = 0;
-                $user->banned_at = null;
-                $user->save();
-            }
-        }
 
         $this->isUserBanned($user_id);
+
         $code = $this->getParameterFromRequest('code');
         if(strlen($code) != 6) return $this->returnError(['Поле code должно состоять из 6 символов']);
         $codeModel = Code::find()->where(['code' => $code])->one();
@@ -70,17 +50,9 @@ class CodeController extends AppController
         }
 
         if (empty($codeModel)) {
-            $user->invalid_code += 1;
-            if($user->invalid_code == 3 || $user->invalid_code == 6 || $user->invalid_code == 9)
-            {
-                $user->banned = 1;
-                $user->banned_at = time();
-            }
-            $user->save();
+            $this->bunUser($user_id);
             return $this->returnError(['Поле code заполнено некорректно']);
         }
-
-
 
         if($codeModel->load(['user_id' => $user_id],'') && $codeModel->validate()){
             $codeModel->save();
@@ -98,34 +70,52 @@ class CodeController extends AppController
     }
 
 
-//    public function isUserBanned($id)
-//    {
-//        $user = UserExt::findOne($id);
-//        if($user->banned) {
-//            if ($user->invalid_code == 3) {
-//                if (time() < ($user->banned_at + 5 * 60)) {
+    public function isUserBanned($id): void
+    {
+        $user = UserExt::find()->where(['user_id' => $id])->one();
+        if($user->banned) {
+            if ($user->invalid_code == 3) {
+                if (time() < ($user->banned_at + 5 * 60)) {
 //                    return self::actionIndex()->$this->returnError(['Вы забанены на 5 минут. Дождитесь разблокировки.']);
-//
-//                }
-//            }
-//            if ($user->invalid_code == 6) {
-//                if (time() < ($user->banned_at + 30 * 60)) {
+                    throw new Exception('Вы забанены на 5 минут. Дождитесь разблокировки.');
+                }
+            }
+            if ($user->invalid_code == 6) {
+                if (time() < ($user->banned_at + 30 * 60)) {
 //                    return $this->returnError(['Вы забанены на 30 минут. Дождитесь разблокировки.']);
-//                }
-//            }
-//            if ($user->invalid_code >= 9) {
+                    throw new Exception('Вы забанены на 30 минут. Дождитесь разблокировки.');
+
+                }
+            }
+            if ($user->invalid_code >= 9) {
 //                return $this->returnError(['Вы забанены.']);
-//            } else {
-//                $user->banned = 0;
-//                $user->banned_at = null;
-//                $user->save();
-//            }
-//        }
-//    }
+                throw new Exception('Вы забанены.');
 
+            } else $this->removeBunUser($id);
+        }
+    }
 
+    public function bunUser($id): void
+    {
+        $user = UserExt::find()->where(['user_id' => $id])->one();
+        $user->invalid_code += 1;
+        if(in_array($user->invalid_code, [3, 6, 9]))
+        {
+            $user->banned = 1;
+            $user->banned_at = time();
+        }
+        $user->save();
+    }
 
-    //фун-ии 1) проверить забаненность, забанить, снять бан
+    public function removeBunUser($id): void
+    {
+        $user = UserExt::find()->where(['user_id' => $id])->one();
+
+        $user->banned = 0;
+        $user->banned_at = null;
+        $user->save();
+    }
+
 //     ArrayHelper::getValue(Yii::$app->params, 'request_limits.' . $category);
 
 
