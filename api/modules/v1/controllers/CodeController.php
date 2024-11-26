@@ -38,6 +38,7 @@ class CodeController extends AppController
     public function actionIndex(): array
     {
         $user_id = Yii::$app->user->identity->getId();
+        $user = UserExt::find()->where(['user_id' => $user_id])->one();
 
         $this->isUserBanned($user_id);
 
@@ -52,6 +53,10 @@ class CodeController extends AppController
         if (empty($codeModel)) {
             $this->bunUser($user_id);
             return $this->returnError(['Поле code заполнено некорректно']);
+        }
+        else {
+            $user->invalid_code = 0;
+            $user->save();
         }
 
         if($codeModel->load(['user_id' => $user_id],'') && $codeModel->validate()){
@@ -115,7 +120,7 @@ class CodeController extends AppController
         $user->banned_at = null;
         $user->save();
     }
-    
+
 
 
 }
